@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages for song - The Flora Project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-family: 'Times New Roman', Times, serif; padding: 20px; }
+        .card { background: rgba(255,255,255,0.06); border-radius:8px; padding:16px; margin-bottom:12px; }
+        a { color: #fff; }
+    </style>
+</head>
+<body>
+    <a href="{% url 'home' %}" style="color:white; text-decoration:none;">← Back</a>
+    <h2 style="margin-top:12px;">Messages using "{{ song }}"</h2>
+    <p style="opacity:0.9;">Found {{ count }} message{{ count|pluralize }}</p>
+
+    {% if results %}
+        {% for item in results %}
+            <div class="card">
+                <div style="display:flex; justify-content:space-between;">
+                    <div>
+                        <strong>{% if item.message.sender_name %}{{ item.message.sender_name }}{% else %}Anonymous{% endif %}</strong>
+                        → <strong>{{ item.message.receiver_name }}</strong>
+                    </div>
+                    <div style="opacity:0.8;">{{ item.message.created_at|date:"M d, Y" }}</div>
+                </div>
+                <div style="margin-top:8px; opacity:{{ item.text_opacity }};">{{ item.message.message_content }}</div>
+                <div style="margin-top:8px; text-align:right;"><a href="{% url 'message_detail' item.message.pk %}">View message →</a></div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div style="margin-top:20px;">No messages found for this song.</div>
+    {% endif %}
+</body>
+</html>

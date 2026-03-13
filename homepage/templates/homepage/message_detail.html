@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ message.receiver_name }} - The Flora Project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Times New Roman', Times, serif;
+            padding: 20px 0;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin: 20px;
+            font-size: 1.1em;
+            transition: transform 0.2s;
+        }
+        
+        .back-link:hover {
+            transform: translateX(-5px);
+            text-decoration: underline;
+        }
+        
+        .container-detail {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .message-detail-card {
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            color: white;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        .message-detail-header {
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            padding-bottom: 20px;
+        }
+        
+        .message-from-to {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .message-timestamp {
+            font-size: 0.95em;
+            opacity: 0.85;
+        }
+        
+        .message-full-content {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin: 30px 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-style: italic;
+        }
+        
+        .message-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .hashtag {
+            font-size: 1.2em;
+            font-weight: bold;
+            opacity: 0.9;
+        }
+        
+        .music-player {
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .music-player audio {
+            display: none;
+        }
+        
+        .music-label {
+            display: none;
+        }
+        
+        .music-info {
+            display: none;
+        }
+
+        .ghost-text {
+            text-decoration: line-through;
+            opacity: 0.6;
+            color: #ccc;
+            font-size: 0.9em;
+            display: none;
+            margin-top: 4px;
+            padding: 4px;
+            border-left: 2px solid rgba(255,255,255,0.2);
+            padding-left: 8px;
+        }
+
+        .ghost-text.revealed {
+            display: block;
+        }
+        
+        .voicemail-player {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .voicemail-label {
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: block;
+            font-size: 1em;
+        }
+        
+        .voicemail-player audio {
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .custom-player {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 0;
+            flex-wrap: wrap;
+        }
+        
+        .player-btn {
+            background: rgba(255,255,255,0.3);
+            border: 2px solid rgba(255,255,255,0.5);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .player-btn:hover {
+            background: rgba(255,255,255,0.5);
+            transform: scale(1.1);
+        }
+        
+        .player-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 25px;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .volume-control input[type="range"] {
+            width: 120px;
+            cursor: pointer;
+            accent-color: rgba(255,255,255,0.8);
+        }
+        
+        .volume-label {
+            font-size: 18px;
+            min-width: 25px;
+            text-align: center;
+        }
+        
+        .music-info {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .back-to-archive {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .back-to-archive:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'home' %}" class="back-link">← Back to Archive</a>
+    
+    <div class="container-detail">
+        <div class="message-detail-card" style="background: linear-gradient(135deg, {{ color }} 0%, rgba(0,0,0,0.1) 100%); color: rgba(255,255,255,{{ text_opacity|default:1 }}); background-image: linear-gradient(rgba(92,64,51,{{ age_opacity|default:0 }}), rgba(92,64,51,{{ age_opacity|default:0 }})), linear-gradient(135deg, {{ color }} 0%, rgba(0,0,0,0.1) 100%);">
+            <div class="message-detail-header">
+                <div class="message-from-to">
+                    {% if message.sender_name %}
+                        {{ message.sender_name }}
+                    {% else %}
+                        <em>Anonymous</em>
+                    {% endif %}
+                    → {{ message.receiver_name }}
+                </div>
+                <div class="message-timestamp">
+                    📅 {{ message.created_at|date:"F d, Y at g:i A" }}
+                </div>
+            </div>
+            
+            <div class="message-full-content" id="messageContent" style="cursor: pointer;">
+                {{ message.message_content }}
+            </div>
+
+            <!-- Ghost Draft - reveal on hover -->
+            {% if message.ghost_draft %}
+            <div class="ghost-text" id="ghostText" title="Double-click to hide (hover over text to reveal once)">
+                <strong>✦ What was written before:</strong><br>
+                <pre style="white-space: pre-wrap; word-wrap: break-word; margin: 0;">{{ message.ghost_draft }}</pre>
+            </div>
+            {% else %}
+            <!-- Debug: show if ghost_draft is empty -->
+            <!-- message.ghost_draft = "{{ message.ghost_draft }}" -->
+            {% endif %}
+            
+            <!-- Voicemail Player -->
+            {% if message.voicemail %}
+            <div class="voicemail-player">
+                <span class="voicemail-label">🎙️ Voicemail</span>
+                <audio controls style="width: 100%; max-width: 400px;">
+                    <source src="{{ message.voicemail.url }}" type="audio/webm">
+                    <source src="{{ message.voicemail.url }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            {% endif %}
+
+            <!-- Photo Preview -->
+            {% if message.image_file %}
+            <div style="margin:20px 0; text-align:center;">
+                <img src="{{ message.image_file.url }}" alt="Photo" style="max-width:100%; border-radius:8px;" />
+            </div>
+            {% endif %}
+
+            <!-- Video Preview with Loop and Volume Control -->
+            {% if message.video_clip %}
+            <div style="margin:20px 0; text-align:center;">
+                <video id="messageVideo" loop style="max-width:100%; border-radius:8px; background: #000;" controlsList="nodownload">
+                    <source src="{{ message.video_clip.url }}" type="video/webm">
+                    <source src="{{ message.video_clip.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <!-- Custom Video Volume Control -->
+                <div style="margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; width: fit-content; margin-left: auto; margin-right: auto;">
+                    <span style="font-size: 18px; min-width: 25px;">🔊</span>
+                    <input type="range" id="videoVolume" min="0" max="100" value="100" style="width: 120px; cursor: pointer; accent-color: rgba(255,255,255,0.8);" title="Video Volume">
+                    <span id="volumePercent" style="font-size: 0.85em; min-width: 35px;">100%</span>
+                </div>
+            </div>
+            <script>
+                const videoElement = document.getElementById('messageVideo');
+                const videoVolume = document.getElementById('videoVolume');
+                const volumePercent = document.getElementById('volumePercent');
+                
+                if (videoVolume && videoElement) {
+                    videoVolume.addEventListener('input', function() {
+                        videoElement.volume = this.value / 100;
+                        volumePercent.textContent = this.value + '%';
+                    });
+                    
+                    // Initialize volume
+                    videoElement.volume = videoVolume.value / 100;
+                }
+            </script>
+            {% endif %}
+            
+            <!-- Music Player -->
+            {% if message.preset_music or message.music_file %}
+            <div class="music-player">
+                {% if message.preset_music %}
+                    <!-- Audio source for preset music -->
+                    <audio id="audioPlayer" preload="auto">
+                        <source src="/static/music/{{ message.preset_music }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                {% elif message.music_file %}
+                    <!-- Audio source for uploaded music -->
+                    <audio id="audioPlayer" preload="auto">
+                        <source src="{{ message.music_file.url }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                {% endif %}
+                
+                <!-- Display music snippet info if selected -->
+                {% if message.music_start_time is not None or message.music_end_time is not None %}
+                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95em;">
+                    <strong>🎵 Song Snippet:</strong>
+                    {% if message.music_start_time %}Start: {{ message.music_start_time|floatformat:1 }}s{% endif %}
+                    {% if message.music_end_time %} — End: {{ message.music_end_time|floatformat:1 }}s{% endif %}
+                </div>
+                {% endif %}
+                
+                <div class="custom-player">
+                    <button type="button" class="player-btn" id="playBtn" title="Play">▶</button>
+                    <div class="volume-control">
+                        <span class="volume-label" id="volumeIcon">🔊</span>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="100" title="Volume">
+                    </div>
+                    <button type="button" class="player-btn" id="muteBtn" title="Mute">🔊</button>
+                </div>
+                <canvas id="detailVisualizer" width="600" height="80" style="width:100%; height:48px; margin-top:12px; display:none; border-radius:6px;"></canvas>
+            </div>
+
+            <!-- Reaction / emotional counter -->
+            {% if reaction_count and reaction_count > 0 %}
+            <div style="margin-top:10px; text-align:center; opacity:0.9; font-size:0.95em;">
+                {% if message.preset_music %}
+                    <a href="{% url 'messages_by_song' %}?song={{ message.preset_music|urlencode }}" style="color: rgba(255,255,255,0.9); text-decoration: underline;">{{ reaction_count }} people are moved by this song right now</a>
+                {% elif message.music_file %}
+                    <a href="{% url 'messages_by_song' %}?song={{ message.music_file.name|urlencode }}" style="color: rgba(255,255,255,0.9); text-decoration: underline;">{{ reaction_count }} people are moved by this song right now</a>
+                {% else %}
+                    <span style="color: rgba(255,255,255,0.9);">{{ reaction_count }} people are moved by this song right now</span>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <script>
+                const audioPlayer = document.getElementById('audioPlayer');
+                const playBtn = document.getElementById('playBtn');
+                const muteBtn = document.getElementById('muteBtn');
+                const volumeSlider = document.getElementById('volumeSlider');
+                const volumeIcon = document.getElementById('volumeIcon');
+                let isMuted = false;
+                
+                // Get song snippet data from template
+                let snippetStart = null;
+                let snippetEnd = null;
+                
+                // Check if song snippet info exists in the page
+                const musicPlayerDiv = document.querySelector('.music-player');
+                if (musicPlayerDiv) {
+                    const snippetInfoText = musicPlayerDiv.textContent;
+                    if (snippetInfoText.includes('Song Snippet')) {
+                        // Extract start and end times from the page content
+                        const startMatch = snippetInfoText.match(/Start: ([\d.]+)s/);
+                        const endMatch = snippetInfoText.match(/End: ([\d.]+)s/);
+                        if (startMatch) snippetStart = parseFloat(startMatch[1]);
+                        if (endMatch) snippetEnd = parseFloat(endMatch[1]);
+                    }
+                }
+                
+                console.log('Audio player source:', audioPlayer?.src);
+                console.log('Audio player ready state:', audioPlayer?.readyState);
+                console.log('Song snippet - Start:', snippetStart, 'End:', snippetEnd);
+                
+                if (!audioPlayer) {
+                    console.error('Audio player element not found');
+                }
+                
+                // Volume slider control
+                if (volumeSlider) {
+                    volumeSlider.addEventListener('input', function(e) {
+                        if (!audioPlayer) return;
+                        audioPlayer.volume = this.value / 100;
+                        
+                        // Update volume icon based on level
+                        if (this.value == 0) {
+                            volumeIcon.textContent = '🔇';
+                        } else if (this.value < 50) {
+                            volumeIcon.textContent = '🔉';
+                        } else {
+                            volumeIcon.textContent = '🔊';
+                        }
+                        
+                        console.log('Volume set to:', audioPlayer.volume);
+                    });
+                    
+                    // Initialize volume
+                    if (audioPlayer) {
+                        audioPlayer.volume = volumeSlider.value / 100;
+                    }
+                }
+                
+                playBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (!audioPlayer) {
+                        console.error('No audio player');
+                        return;
+                    }
+                    
+                    console.log('Play clicked. Paused:', audioPlayer.paused);
+                    
+                    // If song snippet is selected, start from snippet start time
+                    if (audioPlayer.paused && snippetStart !== null) {
+                        audioPlayer.currentTime = snippetStart;
+                    }
+                    
+                    if (audioPlayer.paused) {
+                        const playPromise = audioPlayer.play();
+                        if (playPromise !== undefined) {
+                            playPromise.then(() => {
+                                console.log('Playing audio');
+                                playBtn.textContent = '⏸';
+                                playBtn.title = 'Pause';
+                            }).catch(error => {
+                                console.error('Play error:', error);
+                                alert('Error: ' + error.message);
+                            });
+                        }
+                    } else {
+                        audioPlayer.pause();
+                        console.log('Paused audio');
+                        playBtn.textContent = '▶';
+                        playBtn.title = 'Play';
+                    }
+                });
+                
+                muteBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (!audioPlayer) return;
+                    
+                    isMuted = !isMuted;
+                    audioPlayer.muted = isMuted;
+                    muteBtn.textContent = isMuted ? '🔇' : '🔊';
+                    muteBtn.title = isMuted ? 'Unmute' : 'Mute';
+                    console.log('Muted:', isMuted);
+                });
+                
+                // Handle song snippet - stop at end time
+                audioPlayer.addEventListener('timeupdate', function() {
+                    if (snippetEnd !== null && this.currentTime >= snippetEnd) {
+                        this.pause();
+                        this.currentTime = snippetStart !== null ? snippetStart : 0;
+                        playBtn.textContent = '▶';
+                        playBtn.title = 'Play';
+                    }
+                });
+                
+                audioPlayer.addEventListener('ended', function() {
+                    playBtn.textContent = '▶';
+                    playBtn.title = 'Play';
+                });
+                
+                audioPlayer.addEventListener('error', function(e) {
+                    console.error('Audio error event:', e);
+                    console.error('Error code:', audioPlayer.error?.code);
+                    console.error('Error message:', audioPlayer.error?.message);
+                });
+                
+                audioPlayer.addEventListener('loadstart', function() {
+                    console.log('Audio loading started');
+                });
+                
+                audioPlayer.addEventListener('canplay', function() {
+                    console.log('Audio can play');
+                });
+
+                // small visualizer for the detail music player
+                (function(){
+                    try{
+                        const canvas = document.getElementById('detailVisualizer');
+                        const ctx = canvas.getContext('2d');
+                        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                        let actx = null;
+                        let analyser = null;
+                        let source = null;
+
+                        function ensure(){
+                            if(!actx) actx = new AudioCtx();
+                            if(actx.state === 'suspended') actx.resume().catch(()=>{});
+                        }
+
+                        audioPlayer.addEventListener('play', function(){
+                            try{
+                                ensure();
+                                analyser = actx.createAnalyser();
+                                analyser.fftSize = 512;
+                                source = actx.createMediaElementSource(audioPlayer);
+                                source.connect(analyser);
+                                analyser.connect(actx.destination);
+                                canvas.style.display = 'block';
+                                const data = new Uint8Array(analyser.frequencyBinCount);
+                                (function draw(){
+                                    analyser.getByteFrequencyData(data);
+                                    ctx.clearRect(0,0,canvas.width,canvas.height);
+                                    const bars = 32;
+                                    const step = Math.max(1, Math.floor(data.length / bars));
+                                    const barW = (canvas.width / (window.devicePixelRatio||1)) / bars;
+                                    const grad = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+                                    grad.addColorStop(0,'rgba(102,126,234,0.6)');
+                                    grad.addColorStop(1,'rgba(118,75,162,0.6)');
+                                    for(let i=0,b=0;i<data.length;i+=step,b++){
+                                        const v = data[i]/255;
+                                        const h = v * canvas.height;
+                                        ctx.fillStyle = grad;
+                                        ctx.fillRect(b*barW, canvas.height - h, barW-1, h);
+                                    }
+                                    if(!audioPlayer.paused) requestAnimationFrame(draw);
+                                })();
+                            }catch(e){console.error(e)}
+                        });
+
+                        audioPlayer.addEventListener('pause', function(){ if(canvas) canvas.style.display='none'; });
+                        audioPlayer.addEventListener('ended', function(){ if(canvas) canvas.style.display='none'; });
+                    }catch(e){console.error(e)}
+                })();
+
+                // Ghost Draft Reveal - show on hover, one-time per session
+                (function() {
+                    const ghostText = document.getElementById('ghostText');
+                    const msgContent = document.getElementById('messageContent');
+                    if (!ghostText || !msgContent) return;
+
+                    const sessionKey = 'ghost_revealed_' + window.location.pathname;
+                    const wasRevealed = sessionStorage.getItem(sessionKey);
+
+                    msgContent.addEventListener('mouseenter', function() {
+                        if (!wasRevealed) {
+                            ghostText.classList.add('revealed');
+                            sessionStorage.setItem(sessionKey, 'true');
+                        }
+                    });
+
+                    // double-click to hide again (within session)
+                    ghostText.addEventListener('dblclick', function() {
+                        ghostText.classList.remove('revealed');
+                        sessionStorage.removeItem(sessionKey);
+                    });
+
+                    // auto-reveal if already revealed this session
+                    if (wasRevealed) {
+                        ghostText.classList.add('revealed');
+                    }
+                })();
+            </script>
+            {% endif %}
+            
+            <div class="message-footer">
+                <div class="hashtag">#thefloraproject</div>
+                <br>
+                <a href="{% url 'home' %}" class="back-to-archive">Return to Sending</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

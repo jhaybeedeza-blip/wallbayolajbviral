@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - The Flora Project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Times New Roman', Times, serif;
+            padding: 20px 0;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: fadeIn 0.8s ease-in;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+        
+        .container-main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .search-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        .search-section .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        
+        .search-section .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-search {
+            background: #764ba2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-search:hover {
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .results-section h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .message-card {
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 15px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        .message-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .message-from-to {
+            font-size: 1.1em;
+            font-weight: bold;
+            word-break: break-word;
+        }
+        
+        .message-date {
+            font-size: 0.85em;
+            opacity: 0.8;
+            white-space: nowrap;
+        }
+        
+        .message-content {
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            max-height: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .message-footer {
+            text-align: right;
+            font-size: 0.9em;
+            opacity: 0.9;
+            font-weight: bold;
+        }
+        
+        .message-link {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .message-link:hover {
+            text-decoration: underline;
+        }
+        
+        .music-indicator {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+        
+        .empty-state {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            color: #667eea;
+            font-size: 1.1em;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .empty-state p {
+            margin: 10px 0;
+        }
+        
+        .results-count {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Search Results</h1>
+        <a href="{% url 'home' %}" class="back-link">← Back to Sending</a>
+    </div>
+    
+    <div class="container-main">
+        <!-- Search Section -->
+        <div class="search-section">
+            <form method="GET" style="display: flex; gap: 10px;">
+                {% csrf_token %}
+                <input type="text" name="search_query" class="form-control" placeholder="Search by name..." value="{{ query }}" style="flex: 1; border-radius: 20px;">
+                <button type="submit" style="background: #764ba2; color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer;">Search</button>
+            </form>
+        </div>
+        
+        <!-- Results Section -->
+        <div class="results-section">
+            {% if query %}
+                {% if search_results %}
+                    <div class="results-count">
+                        🌸 Found {{ search_results|length }} message{{ search_results|length|pluralize }} for "{{ query }}"
+                    </div>
+                    
+                    {% for item in search_results %}
+                        <div class="message-card" style="background-color: {{ item.color }}; position:relative; color: rgba(255,255,255,{{ item.text_opacity }}); background-image: linear-gradient(rgba(92,64,51,{{ item.age_opacity }}), rgba(92,64,51,{{ item.age_opacity }}));">
+                            <div class="message-header">
+                                <div class="message-from-to">
+                                    <strong>
+                                        {% if item.message.sender_name %}
+                                            {{ item.message.sender_name }}
+                                        {% else %}
+                                            <em>Anonymous</em>
+                                        {% endif %}
+                                    </strong>
+                                    → <strong>{{ item.message.receiver_name }}</strong>
+                                    {% if item.message.music_file %}
+                                        <span class="music-indicator">🎵 Music</span>
+                                    {% endif %}
+                                </div>
+                                <div class="message-date">
+                                    {{ item.message.created_at|date:"M d, Y" }}
+                                </div>
+                            </div>
+                            <div class="message-content">
+                                {{ item.message.message_content }}
+                            </div>
+                            {% if item.message.voicemail or item.message.music_file or item.message.preset_music %}
+                            <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                                <audio class="mini-audio" preload="none" style="display:none;">
+                                    {% if item.message.voicemail %}
+                                        <source src="{{ item.message.voicemail.url }}" type="audio/webm">
+                                    {% elif item.message.music_file %}
+                                        <source src="{{ item.message.music_file.url }}" type="audio/mpeg">
+                                    {% elif item.message.preset_music %}
+                                        <source src="/static/music/{{ item.message.preset_music }}" type="audio/mpeg">
+                                    {% endif %}
+                                </audio>
+                                <canvas class="mini-visualizer" width="300" height="40" style="width:160px; height:24px; border-radius:4px;"></canvas>
+                                <button type="button" class="recorder-btn mini-play">▶ Preview</button>
+                            </div>
+                            {% endif %}
+                            <div class="message-footer">
+                                <a href="{% url 'message_detail' item.message.pk %}" class="message-link">
+                                    View Full Message →
+                                </a>
+                            </div>
+                            <div style="text-align: center; margin-top: 10px; font-size: 0.65em; opacity: 0.85;">
+                                #thefloraproject
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p>💔 No messages found for "{{ query }}".
+
+                             They may had forgotten about them or you,
+                             maybe they just didn't have the time to do so
+                        </p>
+                        <p style="font-size: 0.9em;">Try searching with a different name (searches are case-insensitive)</p>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <p>🔎 Enter a name to search for messages</p>
+                    <p style="font-size: 0.9em;">Search works for both sender and receiver names</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // small visualizer for search result previews
+        (function(){
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            let audioContext = null;
+
+            function ensureCtx(){
+                if(!audioContext) audioContext = new AudioCtx();
+                if(audioContext.state === 'suspended') audioContext.resume().catch(()=>{});
+            }
+
+            document.querySelectorAll('.mini-play').forEach(btn => {
+                btn.addEventListener('click', function(){
+                    const container = this.closest('.message-card');
+                    const audio = container.querySelector('.mini-audio');
+                    const canvas = container.querySelector('.mini-visualizer');
+                    if(!audio || !canvas) return;
+                    if(audio.paused){
+                        ensureCtx();
+                        audio.play().catch(()=>{});
+                        startMiniViz(audio, canvas);
+                        this.textContent = '⏸';
+                    } else {
+                        audio.pause();
+                        stopMiniViz(canvas);
+                        this.textContent = '▶ Preview';
+                    }
+                });
+            });
+
+            const vmap = new WeakMap();
+
+            function startMiniViz(audioEl, canvas){
+                try{
+                    ensureCtx();
+                    const ctx = canvas.getContext('2d');
+                    const src = audioContext.createMediaElementSource(audioEl);
+                    const analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 256;
+                    src.connect(analyser);
+                    analyser.connect(audioContext.destination);
+                    const bufferLength = analyser.frequencyBinCount;
+                    const data = new Uint8Array(bufferLength);
+
+                    function draw(){
+                        analyser.getByteFrequencyData(data);
+                        ctx.clearRect(0,0,canvas.width,canvas.height);
+                        const barCount = 20;
+                        const step = Math.max(1, Math.floor(bufferLength / barCount));
+                        const barW = canvas.width / barCount;
+                        const grad = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+                        grad.addColorStop(0,'rgba(102,126,234,0.6)');
+                        grad.addColorStop(1,'rgba(118,75,162,0.6)');
+                        for(let i=0,b=0;i<bufferLength;i+=step,b++){
+                            const v = data[i]/255;
+                            const h = v * canvas.height;
+                            ctx.fillStyle = grad;
+                            ctx.fillRect(b*barW, canvas.height - h, barW-1, h);
+                        }
+                        vmap.set(canvas, requestAnimationFrame(draw));
+                    }
+                    draw();
+                }catch(e){console.error(e)}
+            }
+
+            function stopMiniViz(canvas){
+                const id = vmap.get(canvas);
+                if(id) cancelAnimationFrame(id);
+                vmap.delete(canvas);
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+            }
+        })();
+    </script>
+</body>
+</html>

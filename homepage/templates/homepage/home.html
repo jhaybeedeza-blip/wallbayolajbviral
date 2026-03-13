@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Flora Project - Unsent Messages Archive</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Times New Roman', Times, serif;
+            padding: 20px 0;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease-in;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .search-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            margin-top: -20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: slideUp 0.6s ease-out 0.1s backwards;
+            order: -1;
+        }
+        
+        .container-main {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-section {
+            order: 1;
+        }
+        
+        .messages-section {
+            order: 2;
+        }
+        
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        .form-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        /* Scrollable dropdown for music selection */
+        #presetMusicSelect {
+            max-height: 400px;
+            overflow-y: auto;
+            min-height: 200px;
+            font-size: 14px;
+        }
+        
+        #presetMusicSelect option {
+            padding: 8px;
+            line-height: 1.8;
+            background-color: white;
+            color: #333;
+        }
+        
+        #presetMusicSelect optgroup {
+            font-weight: bold;
+            padding: 8px;
+            background-color: #f5f5f5;
+            color: #667eea;
+        }
+        
+        #presetMusicSelect optgroup option {
+            padding-left: 20px;
+            background-color: white;
+            color: #333;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .search-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: slideUp 0.6s ease-out 0.1s backwards;
+        }
+        
+        .search-section .form-control {
+            margin-bottom: 0;
+        }
+        
+        .btn-search {
+            background: #764ba2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-left: 0;
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .btn-search {
+                display: inline-block;
+            }
+        }
+        
+        .messages-section {
+            margin-top: 30px;
+        }
+        
+        .messages-section h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .message-card {
+            border-radius: 0px;
+            padding: 25px;
+            margin-bottom: 15px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.1);
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+        
+        .message-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .message-from-to {
+            font-size: 1.1em;
+            font-weight: bold;
+            word-break: break-word;
+        }
+        
+        .message-date {
+            font-size: 0.85em;
+            opacity: 0.8;
+            white-space: nowrap;
+        }
+        
+        .message-content {
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            max-height: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .message-footer {
+            text-align: right;
+            font-size: 0.9em;
+            opacity: 0.9;
+            font-weight: bold;
+        }
+        
+        .message-link {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .message-link:hover {
+            text-decoration: underline;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: white;
+            padding: 40px;
+            font-size: 1.1em;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hashtag-flora {
+            font-size: 0.65em;
+            opacity: 0.75;
+        }
+        
+        .music-indicator {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+        
+        .voicemail-recorder {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .voicemail-recorder ul li {
+            margin-bottom: 8px;
+        }
+        
+        .recorder-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .recorder-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .recorder-btn:hover:not(:disabled) {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+        
+        .recorder-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .recorder-btn.recording {
+            background: #d32f2f;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .recorder-time {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 60px;
+        }
+        
+        .recorder-status {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .recorder-playback {
+            margin-top: 10px;
+        }
+        
+        .recorder-playback audio {
+            width: 100%;
+            height: 30px;
+        }
+        
+        .song-snippet-selector {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .song-snippet-selector.active {
+            display: block;
+        }
+        
+        .snippet-controls {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        
+        .snippet-range-container {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        
+        .range-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .snippet-range {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+        
+        .snippet-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+        
+        .snippet-range::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+        
+        .snippet-preview {
+            background: #f5f5f5;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .preview-label {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .snippet-preview audio {
+            width: 100%;
+            max-width: 400px;
+            margin: 10px 0;
+        }
+        
+        .snippet-duration {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1> The Flora Project</h1>
+        <p>Messages to loved ones whether lovely or poignant</p>
+    </div>
+    
+    <div class="container-main">
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="input-group">
+                <form method="GET" action="{% url 'search' %}" style="width: 100%; display: flex; gap: 10px;" onsubmit="return validateSearch(event);">
+                    {% csrf_token %}
+                    <input type="text" name="search_query" class="form-control" placeholder="Search by name..." value="" id="search-input" style="flex: 1; border-radius: 20px;">
+                    <button type="submit" class="btn-search">🔍</button>
+                </form>
+                <div id="search-warning" style="color: #d32f2f; margin-top: 10px; font-size: 0.9em; display: none;">
+                    ⚠️ Please enter a name to search
+                </div>
+            </div>
+        </div>
+        
+        <!-- Message Submission Form -->
+        <div class="form-section">
+            <h2>💌 Share Your Unsent Message</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {{ form.sender_name }}
+                {{ form.sender_name.errors }}
+                
+                {{ form.receiver_name }}
+                {{ form.receiver_name.errors }}
+                
+                {{ form.message_content }}
+                {{ form.message_content.errors }}
+                
+                <!-- Hidden ghost_draft field - tracks deleted text -->
+                {{ form.ghost_draft }}
+                {{ form.ghost_draft.errors }}
+                
+                <label style="display: block; margin-bottom: 10px; font-weight: bold; color: #667eea;">
+                    {{ form.preset_music.label }}
+                </label>
+                <!-- Scrollable Music List -->
+                <div style="position: relative;">
+                    {{ form.preset_music }}
+                    <script>
+                        // Make dropdown scrollable with size attribute
+                        const musicSelect = document.getElementById('presetMusicSelect');
+                        if (musicSelect) {
+                            musicSelect.size = 8; // Shows 8 items at once, rest scroll
+                            musicSelect.style.width = '100%';
+                            musicSelect.style.padding = '8px';
+                            musicSelect.style.fontSize = '14px';
+                            musicSelect.style.borderRadius = '8px';
+                        }
+                    </script>
+                </div>
+                {{ form.preset_music.errors }}
+                
+                <!-- Song Snippet Selector -->
+                <div class="song-snippet-selector" id="songSnippetSelector">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">🎵 Select Song Snippet (Drag to Choose)</h4>
+                    
+                    <div class="snippet-range-container">
+                        <div class="range-label">
+                            <span>Start: <span id="startDisplay">0:00</span></span>
+                            <span>Duration: <span id="durationDisplay">0:00</span></span>
+                            <span>End: <span id="endDisplay">0:00</span></span>
+                        </div>
+                        <input type="range" id="snippetStart" class="snippet-range" min="0" max="0" step="0.1" value="0" title="Drag to set start time">
+                        <div style="height: 8px; margin-top: 10px; border-radius: 5px; background: linear-gradient(to right, #667eea 0%, #764ba2 100%);"></div>
+                        <input type="range" id="snippetEnd" class="snippet-range" min="0" max="0" step="0.1" value="0" title="Drag to set end time" style="margin-top: 10px;">
+                    </div>
+                    
+                    <div class="snippet-preview">
+                        <div class="preview-label">🎧 Preview Selected Snippet</div>
+                        <audio id="snippetAudio" controls preload="metadata" style="width: 100%; max-width: 400px;">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <div class="snippet-duration">
+                            Selected length: <strong id="selectedLength">0:00</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hidden fields for start/end times -->
+                {{ form.music_start_time }}
+                {{ form.music_end_time }}
+                
+                <label for="{{ form.music_file.id_for_label }}" style="display: block; margin-bottom: 10px; font-weight: bold; color: #667eea; margin-top: 15px;">
+                    📤 Or Upload Your Own Music
+                </label>
+                {{ form.music_file }}
+                {{ form.music_file.errors }}
+                
+                <!-- Voicemail Recording Section -->
+                <div class="voicemail-recorder" style="margin-top: 20px;">
+                    <label style="display: block; margin-bottom: 15px; font-weight: bold; color: #667eea;">
+                        🎙️ Record a Voicemail (Optional)
+                    </label>
+                    
+                    <div style="background: white; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #333;">
+                        <p><strong>How to Record a Voicemail:</strong></p>
+                        <ul style="margin: 10px 0 0 20px; padding: 0;">
+                            <li>Click <strong>🔴 Record</strong> button to start</li>
+                            <li>Allow microphone access when prompted</li>
+                            <li>Speak your message</li>
+                            <li>Click <strong>⏹️ Stop</strong> when done</li>
+                            <li>Preview your voicemail in the player below</li>
+                            <li>Click <strong>Send</strong> to send your message with voicemail</li>
+                            <li>Click <strong>🗑️ Clear</strong> to record again</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="recorder-controls">
+                        <button type="button" id="startRecording" class="recorder-btn">🔴 Record</button>
+                        <button type="button" id="stopRecording" class="recorder-btn" disabled>⏹️ Stop</button>
+                        <button type="button" id="clearRecording" class="recorder-btn" disabled>🗑️ Clear</button>
+                        <span class="recorder-time" id="recordingTime">0:00</span>
+                        <span class="recorder-status" id="recordingStatus"></span>
+                    </div>
+                    
+                    <div class="recorder-playback" id="playbackContainer" style="display: none;">
+                        <audio id="voicemailPlayback" controls></audio>
+                        <p style="margin-top: 10px; font-size: 0.9em; color: #666;">✓ Voicemail recorded and ready to send</p>
+                    </div>
+                </div>
+                
+                <!-- Hidden voicemail form field -->
+                <input type="file" id="id_voicemail" name="voicemail" accept="audio/*" style="display: none;">
+                
+                {{ form.voicemail.errors }}
+                
+                <!-- Voicemail visualizer -->
+                <div style="margin-top:10px;">
+                    <canvas id="voicemailVisualizer" width="600" height="100" style="width:100%; background: #111; border-radius:6px; display:none;"></canvas>
+                    <div id="voicemailPitch" style="margin-top:6px; font-weight:bold; color:#333; display:none;">Pitch: -- Hz</div>
+                </div>
+                
+                <!-- Camera / Video Recorder Section -->
+                <div class="voicemail-recorder" style="margin-top: 20px;">
+                    <label style="display: block; margin-bottom: 15px; font-weight: bold; color: #667eea;">
+                        📷 Capture Photo or 🎥 Short Video (10-15s)
+                    </label>
+
+                    <div style="background: white; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #333;">
+                        <p style="margin:0;"><strong>How to use:</strong> Allow camera access, then capture a photo or record a short video. Preview will appear below. The captured media will be attached to your message when you click Send.</p>
+                    </div>
+
+                    <div style="display:flex; gap:10px; flex-direction:column;">
+                        <video id="cameraPreview" autoplay playsinline style="width:100%; max-height:360px; background:#000; border-radius:6px;"></video>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button type="button" id="startCamera" class="recorder-btn">🚀 Start Camera</button>
+                            <button type="button" id="capturePhoto" class="recorder-btn" disabled>📸 Capture Photo</button>
+                            <button type="button" id="startVideo" class="recorder-btn" disabled>🔴 Record Video</button>
+                            <button type="button" id="stopVideo" class="recorder-btn" disabled>⏹️ Stop Video</button>
+                            <button type="button" id="clearMedia" class="recorder-btn" disabled>🗑️ Clear</button>
+                            <span id="videoTimer" class="recorder-time">0:00</span>
+                        </div>
+
+                        <div id="mediaPreview" style="margin-top:10px; display:none;">
+                            <img id="photoPreview" src="" alt="Photo preview" style="max-width:100%; display:none; border-radius:6px;" />
+                            <video id="videoPlayback" controls style="max-width:100%; display:none; border-radius:6px;"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hidden camera form fields -->
+                <input type="file" id="id_image_file" name="image_file" accept="image/*" style="display: none;">
+                <input type="file" id="id_video_clip" name="video_clip" accept="video/*" style="display: none;">
+                
+                <button type="submit" class="btn-submit">Send</button>
+            </form>
+        </div>
+        
+        <!-- Messages Display -->
+        <div class="messages-section">
+            {% if messages_with_colors %}
+                <h3>📮 Recent Sent Messages</h3>
+                <div>
+                            {% for item in messages_with_colors %}
+                                <div class="message-card" style="background-color: {{ item.color }}; position:relative; color: rgba(255,255,255,{{ item.text_opacity }}); background-image: linear-gradient(rgba(92,64,51,{{ item.age_opacity }}), rgba(92,64,51,{{ item.age_opacity }}));">
+                            <div class="message-header">
+                                <div class="message-from-to">
+                                    <strong>
+                                        {% if item.message.sender_name %}
+                                            {{ item.message.sender_name }}
+                                        {% else %}
+                                            <em>Anonymous</em>
+                                        {% endif %}
+                                    </strong>
+                                    → <strong>{{ item.message.receiver_name }}</strong>
+                                    {% if item.message.music_file %}
+                                        <span class="music-indicator">🎵 Music</span>
+                                    {% endif %}
+                                </div>
+                                <div class="message-date">
+                                    {{ item.message.created_at|date:"M d, Y" }}
+                                </div>
+                            </div>
+                            <div class="message-content">
+                                {{ item.message.message_content }}
+                            </div>
+                            <div class="message-footer">
+                                <a href="{% url 'message_detail' item.message.pk %}" class="message-link">
+                                    View Full Message →
+                                </a>
+                            </div>
+                            <div style="text-align: center; margin-top: 10px; font-size: 0.65em; opacity: 0.85;" class="hashtag-flora">
+                                #thefloraproject
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>💭 Be the first to share an unsent message...</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function validateSearch(event) {
+            const searchInput = document.getElementById('search-input');
+            const warning = document.getElementById('search-warning');
+            
+            if (!searchInput.value.trim()) {
+                event.preventDefault();
+                warning.style.display = 'block';
+                return false;
+            }
+            warning.style.display = 'none';
+            return true;
+        }
+        
+        // Allow Enter key to submit search
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (this.value.trim()) {
+                    this.form.submit();
+                } else {
+                    document.getElementById('search-warning').style.display = 'block';
+                }
+            }
+        });
+        
+        // Voicemail Recorder
+        let mediaRecorder;
+        let recordedChunks = [];
+        let recordingStartTime;
+        let timerInterval;
+        
+        const startBtn = document.getElementById('startRecording');
+        const stopBtn = document.getElementById('stopRecording');
+        const clearBtn = document.getElementById('clearRecording');
+        const timeDisplay = document.getElementById('recordingTime');
+        const statusDisplay = document.getElementById('recordingStatus');
+        const playbackContainer = document.getElementById('playbackContainer');
+        const voicemailPlayback = document.getElementById('voicemailPlayback');
+        const voicemailInput = document.querySelector('input[name="voicemail"]');
+        
+        startBtn.addEventListener('click', async function() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                recordedChunks = [];
+                
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        recordedChunks.push(e.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    voicemailPlayback.src = audioUrl;
+                    playbackContainer.style.display = 'block';
+                    
+                    // Create a File object to send with form
+                    const file = new File([audioBlob], 'voicemail.webm', { type: 'audio/webm' });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    voicemailInput.files = dataTransfer.files;
+                };
+                
+                recordingStartTime = Date.now();
+                startTimer();
+                
+                startBtn.disabled = true;
+                startBtn.classList.add('recording');
+                stopBtn.disabled = false;
+                clearBtn.disabled = true;
+                statusDisplay.textContent = 'Recording...';
+                
+                mediaRecorder.start();
+            } catch (err) {
+                alert('Microphone access denied. Please allow microphone permissions.');
+                console.error('Microphone error:', err);
+            }
+        });
+        
+        stopBtn.addEventListener('click', function() {
+            mediaRecorder.stop();
+            mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            
+            clearInterval(timerInterval);
+            startBtn.disabled = false;
+            startBtn.classList.remove('recording');
+            stopBtn.disabled = true;
+            clearBtn.disabled = false;
+            statusDisplay.textContent = 'Recording complete';
+        });
+        
+        clearBtn.addEventListener('click', function() {
+            recordedChunks = [];
+            voicemailPlayback.src = '';
+            voicemailInput.value = '';
+            playbackContainer.style.display = 'none';
+            timeDisplay.textContent = '0:00';
+            statusDisplay.textContent = '';
+            clearBtn.disabled = true;
+        });
+        
+        function startTimer() {
+            timerInterval = setInterval(function() {
+                const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                timeDisplay.textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+            }, 100);
+        }
+
+        // Camera / Short Video Recorder
+        let cameraStream = null;
+        let videoRecorder = null;
+        let videoChunks = [];
+        let videoStartTime = null;
+        let videoTimerInterval = null;
+        const MAX_VIDEO_SECONDS = 15; // enforce ~10-15s
+
+        const startCameraBtn = document.getElementById('startCamera');
+        const capturePhotoBtn = document.getElementById('capturePhoto');
+        const startVideoBtn = document.getElementById('startVideo');
+        const stopVideoBtn = document.getElementById('stopVideo');
+        const clearMediaBtn = document.getElementById('clearMedia');
+        const cameraPreview = document.getElementById('cameraPreview');
+        const photoPreview = document.getElementById('photoPreview');
+        const videoPlayback = document.getElementById('videoPlayback');
+        const mediaPreview = document.getElementById('mediaPreview');
+        const videoTimerDisplay = document.getElementById('videoTimer');
+        const imageInput = document.getElementById('id_image_file');
+        const videoInput = document.getElementById('id_video_clip');
+
+        startCameraBtn.addEventListener('click', async function() {
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                cameraPreview.srcObject = cameraStream;
+                capturePhotoBtn.disabled = false;
+                startVideoBtn.disabled = false;
+                clearMediaBtn.disabled = false;
+            } catch (err) {
+                alert('Camera access denied. Please allow camera permissions.');
+                console.error('Camera error:', err);
+            }
+        });
+
+        capturePhotoBtn.addEventListener('click', function() {
+            if (!cameraStream) return;
+            const track = cameraStream.getVideoTracks()[0];
+            const settings = track.getSettings();
+            const w = settings.width || cameraPreview.videoWidth || 640;
+            const h = settings.height || cameraPreview.videoHeight || 480;
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(cameraPreview, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(function(blob) {
+                const file = new File([blob], 'photo.png', { type: blob.type });
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                imageInput.files = dt.files;
+                photoPreview.src = URL.createObjectURL(blob);
+                photoPreview.style.display = 'block';
+                videoPlayback.style.display = 'none';
+                mediaPreview.style.display = 'block';
+            }, 'image/png');
+        });
+
+        startVideoBtn.addEventListener('click', function() {
+            if (!cameraStream) return;
+            videoChunks = [];
+            try {
+                videoRecorder = new MediaRecorder(cameraStream, { mimeType: 'video/webm;codecs=vp8,opus' });
+            } catch (e) {
+                try {
+                    videoRecorder = new MediaRecorder(cameraStream);
+                } catch (err) {
+                    alert('Video recording not supported in this browser.');
+                    console.error(err);
+                    return;
+                }
+            }
+
+            videoRecorder.ondataavailable = function(e) {
+                if (e.data && e.data.size > 0) {
+                    videoChunks.push(e.data);
+                }
+            };
+
+            videoRecorder.onstop = function() {
+                const blob = new Blob(videoChunks, { type: 'video/webm' });
+                const file = new File([blob], 'clip.webm', { type: blob.type });
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                videoInput.files = dt.files;
+                videoPlayback.src = URL.createObjectURL(blob);
+                videoPlayback.style.display = 'block';
+                photoPreview.style.display = 'none';
+                mediaPreview.style.display = 'block';
+            };
+
+            videoRecorder.start();
+            videoStartTime = Date.now();
+            updateVideoTimer();
+            videoTimerInterval = setInterval(updateVideoTimer, 200);
+            startVideoBtn.disabled = true;
+            stopVideoBtn.disabled = false;
+
+            // enforce max duration
+            setTimeout(function() {
+                if (videoRecorder && videoRecorder.state === 'recording') {
+                    videoRecorder.stop();
+                    stopCameraTracksIfNotRecordingAudio();
+                }
+            }, MAX_VIDEO_SECONDS * 1000);
+        });
+
+        stopVideoBtn.addEventListener('click', function() {
+            if (videoRecorder && videoRecorder.state === 'recording') {
+                videoRecorder.stop();
+            }
+            clearInterval(videoTimerInterval);
+            videoTimerDisplay.textContent = '0:00';
+            startVideoBtn.disabled = false;
+            stopVideoBtn.disabled = true;
+        });
+
+        clearMediaBtn.addEventListener('click', function() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(t => t.stop());
+                cameraPreview.srcObject = null;
+                cameraStream = null;
+            }
+            photoPreview.src = '';
+            videoPlayback.src = '';
+            photoPreview.style.display = 'none';
+            videoPlayback.style.display = 'none';
+            mediaPreview.style.display = 'none';
+            imageInput.value = '';
+            videoInput.value = '';
+            capturePhotoBtn.disabled = true;
+            startVideoBtn.disabled = true;
+            stopVideoBtn.disabled = true;
+            clearMediaBtn.disabled = true;
+            clearInterval(videoTimerInterval);
+            videoTimerDisplay.textContent = '0:00';
+        });
+
+        function updateVideoTimer() {
+            if (!videoStartTime) return;
+            const elapsed = Math.floor((Date.now() - videoStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            videoTimerDisplay.textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+            if (elapsed >= MAX_VIDEO_SECONDS) {
+                if (videoRecorder && videoRecorder.state === 'recording') {
+                    videoRecorder.stop();
+                }
+                clearInterval(videoTimerInterval);
+            }
+        }
+
+        function stopCameraTracksIfNotRecordingAudio() {
+            // Stop camera tracks but keep audio if needed elsewhere
+            if (!cameraStream) return;
+            cameraStream.getVideoTracks().forEach(t => t.stop());
+            // leave audio tracks if you want to keep them; here we stop all for safety
+            cameraStream.getAudioTracks().forEach(t => t.stop());
+            cameraPreview.srcObject = null;
+        }
+
+        // Voicemail Visualizer (frequency bars + dominant pitch)
+        let audioContext = null;
+        let analyser = null;
+        let analyserSource = null;
+        let visualizerCanvas = document.getElementById('voicemailVisualizer');
+        let pitchDisplay = document.getElementById('voicemailPitch');
+        let vizCtx = visualizerCanvas?.getContext('2d');
+        let vizAnimationId = null;
+
+        function ensureAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            // resume if suspended (some browsers require user gesture)
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().catch(e => console.warn('AudioContext resume failed:', e));
+            }
+        }
+
+        function startVisualizer() {
+            if (!analyser || !vizCtx) return;
+            visualizerCanvas.style.display = 'block';
+            pitchDisplay.style.display = 'block';
+            // ensure canvas size matches displayed size for crisp bars
+            try {
+                const dpr = window.devicePixelRatio || 1;
+                const cw = visualizerCanvas.clientWidth || visualizerCanvas.width;
+                const ch = visualizerCanvas.clientHeight || visualizerCanvas.height;
+                visualizerCanvas.width = Math.floor(cw * dpr);
+                visualizerCanvas.height = Math.floor(ch * dpr);
+                vizCtx = visualizerCanvas.getContext('2d');
+                vizCtx.scale(dpr, dpr);
+            } catch (err) {
+                console.warn('Canvas sizing warning', err);
+            }
+
+            analyser.fftSize = 2048;
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            const draw = () => {
+                analyser.getByteFrequencyData(dataArray);
+                // draw gradient background matching site palette
+                const g = vizCtx.createLinearGradient(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+                g.addColorStop(0, 'rgba(102,126,234,0.08)');
+                g.addColorStop(1, 'rgba(118,75,162,0.12)');
+                vizCtx.fillStyle = g;
+                vizCtx.fillRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+
+                const barCount = 64;
+                const step = Math.max(1, Math.floor(bufferLength / barCount));
+                const barWidth = (visualizerCanvas.width / (window.devicePixelRatio || 1)) / barCount;
+
+                let maxVal = -1;
+                let maxIndex = -1;
+                for (let i = 0; i < bufferLength; i++) {
+                    if (dataArray[i] > maxVal) {
+                        maxVal = dataArray[i];
+                        maxIndex = i;
+                    }
+                }
+
+                // Draw bars
+                for (let i = 0, b = 0; i < bufferLength; i += step, b++) {
+                    const v = dataArray[i] / 255;
+                    const h = v * visualizerCanvas.height;
+                    const x = b * barWidth;
+                    const grad = vizCtx.createLinearGradient(x, 0, x + barWidth, visualizerCanvas.height);
+                    grad.addColorStop(0, '#67c23a');
+                    grad.addColorStop(1, '#3a7bd5');
+                    vizCtx.fillStyle = grad;
+                    vizCtx.fillRect(x, visualizerCanvas.height - h, barWidth - 2, h);
+                }
+
+                // Estimate dominant frequency from maxIndex
+                if (maxIndex > 0 && audioContext) {
+                    const nyquist = audioContext.sampleRate / 2;
+                    const dominantFreq = Math.round(maxIndex * nyquist / bufferLength);
+                    pitchDisplay.textContent = `Pitch: ${dominantFreq} Hz`;
+                } else {
+                    pitchDisplay.textContent = 'Pitch: -- Hz';
+                }
+
+                vizAnimationId = requestAnimationFrame(draw);
+            };
+
+            if (!vizAnimationId) draw();
+        }
+
+        function stopVisualizer() {
+            if (vizAnimationId) {
+                cancelAnimationFrame(vizAnimationId);
+                vizAnimationId = null;
+            }
+            if (visualizerCanvas) visualizerCanvas.style.display = 'none';
+            if (pitchDisplay) pitchDisplay.style.display = 'none';
+            if (analyserSource) {
+                try { analyserSource.disconnect(); } catch (e) {}
+                analyserSource = null;
+            }
+            if (analyser) {
+                try { analyser.disconnect(); } catch (e) {}
+                analyser = null;
+            }
+        }
+
+        // Hook visualizer into live voicemail recording
+        startBtn.addEventListener('click', async function() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                recordedChunks = [];
+
+                // Setup analyser for live monitoring
+                ensureAudioContext();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                analyserSource = audioContext.createMediaStreamSource(stream);
+                analyserSource.connect(analyser);
+                startVisualizer();
+
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        recordedChunks.push(e.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    voicemailPlayback.src = audioUrl;
+                    playbackContainer.style.display = 'block';
+
+                    // Create a File object to send with form
+                    const file = new File([audioBlob], 'voicemail.webm', { type: 'audio/webm' });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    voicemailInput.files = dataTransfer.files;
+
+                    // After stopping recording, stop visualizer (we'll hook it to playback when played)
+                    stopVisualizer();
+                };
+
+                recordingStartTime = Date.now();
+                startTimer();
+
+                startBtn.disabled = true;
+                startBtn.classList.add('recording');
+                stopBtn.disabled = false;
+                clearBtn.disabled = true;
+                statusDisplay.textContent = 'Recording...';
+
+                mediaRecorder.start();
+            } catch (err) {
+                alert('Microphone access denied. Please allow microphone permissions.');
+                console.error('Microphone error:', err);
+            }
+        });
+
+        // Hook visualizer to playback audio element
+        voicemailPlayback.addEventListener('play', function() {
+            try {
+                ensureAudioContext();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                // Create source from element
+                const source = audioContext.createMediaElementSource(voicemailPlayback);
+                analyserSource = source;
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+                startVisualizer();
+            } catch (e) {
+                console.error('Visualizer playback hookup failed:', e);
+            }
+        });
+
+        voicemailPlayback.addEventListener('pause', stopVisualizer);
+        voicemailPlayback.addEventListener('ended', stopVisualizer);
+
+        // Ghost Draft Tracker - capture deleted/overwritten text (IMPROVED)
+        (function() {
+            const msgInput = document.querySelector('textarea[name="message_content"]');
+            const ghostField = document.querySelector('textarea[name="ghost_draft"]');
+            if (!msgInput || !ghostField) {
+                console.warn('Ghost draft tracker: input or ghost field not found');
+                return;
+            }
+
+            let prevText = msgInput.value;
+            let ghostTexts = []; // collect all deleted segments
+
+            msgInput.addEventListener('input', function() {
+                const curText = this.value;
+                const prevLen = prevText.length;
+                const curLen = curText.length;
+
+                console.log('Ghost tracker: prevLen=' + prevLen + ', curLen=' + curLen);
+
+                // detect deletion (text became shorter)
+                if (curLen < prevLen) {
+                    // find common prefix
+                    let commonIdx = 0;
+                    while (commonIdx < curLen && prevText[commonIdx] === curText[commonIdx]) {
+                        commonIdx++;
+                    }
+                    
+                    // extract deleted part
+                    let deletedPart = prevText.substring(commonIdx, prevLen);
+                    
+                    if (deletedPart.trim()) {
+                        console.log('Deleted text:', deletedPart);
+                        ghostTexts.push(deletedPart);
+                        ghostField.value = ghostTexts.join('\n---DELETED---\n');
+                        console.log('Ghost field now contains:', ghostField.value);
+                    }
+                }
+
+                prevText = curText;
+            });
+
+            // Also check on form submit to ensure value is set
+            const form = msgInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    if (!ghostField.value && ghostTexts.length > 0) {
+                        ghostField.value = ghostTexts.join('\n---DELETED---\n');
+                        console.log('Form submit: Set ghost_draft to:', ghostField.value);
+                    }
+                });
+            }
+        })();
+        
+        // Song Snippet Selector - Drag to select part of song
+        (function() {
+            const presetMusicSelect = document.getElementById('presetMusicSelect');
+            const snippetSelector = document.getElementById('songSnippetSelector');
+            const snippetStart = document.getElementById('snippetStart');
+            const snippetEnd = document.getElementById('snippetEnd');
+            const snippetAudio = document.getElementById('snippetAudio');
+            const startDisplay = document.getElementById('startDisplay');
+            const endDisplay = document.getElementById('endDisplay');
+            const durationDisplay = document.getElementById('durationDisplay');
+            const selectedLength = document.getElementById('selectedLength');
+            const musicStartTimeInput = document.getElementById('musicStartTime');
+            const musicEndTimeInput = document.getElementById('musicEndTime');
+            
+            if (!presetMusicSelect) return;
+            
+            // Format time as MM:SS
+            function formatTime(seconds) {
+                if (!isFinite(seconds)) return '0:00';
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+            
+            // Update audio source when preset music is selected
+            presetMusicSelect.addEventListener('change', function() {
+                if (!this.value) {
+                    snippetSelector.classList.remove('active');
+                    return;
+                }
+
+                // Handle placeholder entries for missing files (created from categories.json)
+                if (this.value.startsWith('MISSING__')) {
+                    const fname = this.value.replace('MISSING__', '');
+                    alert(`"${fname}" is missing from static/music. Please add the file to enable snippet selection.`);
+                    this.value = '';
+                    snippetSelector.classList.remove('active');
+                    snippetAudio.src = '';
+                    // Clear hidden inputs
+                    snippetStart.value = 0;
+                    snippetEnd.value = 0;
+                    musicStartTimeInput.value = 0;
+                    musicEndTimeInput.value = 0;
+                    startDisplay.textContent = formatTime(0);
+                    endDisplay.textContent = formatTime(0);
+                    durationDisplay.textContent = formatTime(0);
+                    return;
+                }
+
+                const musicPath = `/static/music/${this.value}`;
+                snippetAudio.src = musicPath;
+                snippetSelector.classList.add('active');
+                
+                // Reset sliders when new song is selected
+                snippetStart.value = 0;
+                snippetEnd.value = 0;
+                musicStartTimeInput.value = 0;
+                musicEndTimeInput.value = 0;
+                
+                // Load metadata to get duration
+                snippetAudio.addEventListener('loadedmetadata', function() {
+                    const duration = snippetAudio.duration;
+                    snippetStart.max = duration;
+                    snippetEnd.max = duration;
+                    snippetEnd.value = Math.min(duration, 30); // Default to 30 seconds or full song
+                    musicEndTimeInput.value = snippetEnd.value;
+                    
+                    startDisplay.textContent = formatTime(0);
+                    endDisplay.textContent = formatTime(snippetEnd.value);
+                    durationDisplay.textContent = formatTime(snippetEnd.value);
+                }, { once: true });
+            });
+            
+            // Update display when start slider changes
+            snippetStart.addEventListener('input', function() {
+                let startVal = parseFloat(this.value);
+                let endVal = parseFloat(snippetEnd.value);
+                
+                // Prevent start from exceeding end
+                if (startVal > endVal) {
+                    startVal = endVal;
+                    snippetStart.value = startVal;
+                }
+                
+                musicStartTimeInput.value = startVal;
+                startDisplay.textContent = formatTime(startVal);
+                
+                const duration = endVal - startVal;
+                durationDisplay.textContent = formatTime(duration);
+                selectedLength.textContent = formatTime(duration);
+                
+                // Update audio preview playback to start from selected position
+                try {
+                    // Seek to the new start position
+                    snippetAudio.currentTime = startVal;
+                } catch (err) {
+                    // If metadata isn't loaded yet, wait for it
+                    snippetAudio.addEventListener('loadedmetadata', function() {
+                        snippetAudio.currentTime = startVal;
+                    }, { once: true });
+                }
+
+                // Try to auto-play for immediate preview (may be blocked by browser until user interacts)
+                const tryPlay = () => {
+                    snippetAudio.play().catch(() => {});
+                };
+
+                // Only attempt to play if user has previously interacted or audio is already playing
+                if (!snippetAudio.paused || document.hasFocus()) {
+                    tryPlay();
+                }
+            });
+            
+            // Update display when end slider changes
+            snippetEnd.addEventListener('input', function() {
+                let endVal = parseFloat(this.value);
+                let startVal = parseFloat(snippetStart.value);
+                
+                // Prevent end from going below start
+                if (endVal < startVal) {
+                    endVal = startVal;
+                    snippetEnd.value = endVal;
+                }
+                
+                musicEndTimeInput.value = endVal;
+                endDisplay.textContent = formatTime(endVal);
+                
+                const duration = endVal - startVal;
+                durationDisplay.textContent = formatTime(duration);
+                selectedLength.textContent = formatTime(duration);
+            });
+            
+            // When play is initiated, ensure playback starts from the selected start time
+            snippetAudio.addEventListener('play', function() {
+                const startVal = parseFloat(snippetStart.value) || 0;
+                const endVal = parseFloat(snippetEnd.value) || 0;
+
+                // If currentTime is outside selected snippet, seek to start
+                if (this.currentTime < startVal || this.currentTime > endVal) {
+                    if (isFinite(this.duration)) {
+                        this.currentTime = startVal;
+                    } else {
+                        this.addEventListener('loadedmetadata', function() {
+                            this.currentTime = startVal;
+                        }, { once: true });
+                    }
+                }
+            });
+
+            // Auto-stop audio preview at end time (with small tolerance for float rounding)
+            snippetAudio.addEventListener('timeupdate', function() {
+                const endVal = parseFloat(snippetEnd.value);
+                const tolerance = 0.05; // seconds
+                if (this.currentTime + tolerance >= endVal) {
+                    this.pause();
+                    this.currentTime = parseFloat(snippetStart.value);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

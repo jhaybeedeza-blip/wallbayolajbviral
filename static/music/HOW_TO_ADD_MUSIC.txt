@@ -1,0 +1,44 @@
+# HOW TO ADD MUSIC FILES
+
+## Step 1: Locate the Music Directory
+The music files should be placed in:
+```
+c:\Users\Acer\Desktop\django_lesson\sitenijb\static\music\
+```
+
+## Step 2: Add Your Downloaded Music Files
+Copy your downloaded music files to the directory above. Supported formats:
+- **MP3** (most common)
+- **WAV**
+- **OGG**
+- **M4A**
+- **FLAC**
+- **AAC**
+
+### Example:
+If you download a file like `relaxing_song.mp3`, place it in the `static\music\` folder.
+It will automatically appear in the dropdown menu when users create messages.
+
+## Step 3: The File Will Show Up
+Once you place music files in `static\music\`, they will automatically:
+1. Appear in the "🎵 Select Preset Music" dropdown on the home page
+2. Be available for users to attach to their messages
+3. Show with a custom play/mute button player on the message detail page
+
+## Example Music Files to Add
+You can rename your files like:
+- `evening_vibes.mp3`
+- `morning_coffee.wav`
+- `ambient_music.ogg`
+- `focus_music.flac`
+
+## Using the Music Player
+When a message has music attached:
+1. Go to "View Full Message"
+2. You'll see:
+   - **▶ Button** - Play/Pause the music
+   - **🔊 Button** - Mute/Unmute the audio
+3. The button changes to **⏸** (pause icon) when playing
+4. The mute button changes to **🔇** when muted
+
+No full player controls visible - just minimal play and mute buttons!
